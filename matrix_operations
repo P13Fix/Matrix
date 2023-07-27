@@ -1,0 +1,124 @@
+options = ['1. Add matrices', '2. Multiply matrix by a constant', '3. Multiply matrices', '4. Transpose matrix',
+           '0. Exit']
+
+
+def fill_row(col):
+    row, fin_row = input().split(), []
+    if len(row) == col:
+        for n in row:
+            fin_row.append(int(n) if n.isdigit() else float(n))
+        return fin_row
+    else:
+        print('Row is incorrect length')
+        return fill_row(col)
+
+
+def create_matrix(row, col):
+    _matrix = [fill_row(col) for i in range(row)]
+    return _matrix
+
+
+# define if operation is possible with set of args in order: row1, col1, row2, col2)
+def matrix_rules(operation, *args):
+    if operation == 1:
+        return True if (args[0] == args[2] and args[1] == args[3]) else print('The operation cannot be performed')
+    elif operation == 3:
+        return True if (args[1] == args[2]) else print('The operation cannot be performed')
+
+
+def print_matrix(matrix):
+    print('The result is:')
+    for i in range(len(matrix)):
+        print(*matrix[i])
+
+
+def add_matrices():
+    row1, col1 = map(int, input('Enter size of first matrix: ').split())
+    print('Enter first matrix:')
+    matrix1 = create_matrix(row1, col1)
+    row2, col2 = map(int, input('Enter size of second matrix: ').split())
+    print('Enter second matrix:')
+    matrix2 = create_matrix(row2, col2)
+    if matrix_rules(1, row1, col1, row2, col2):
+        matrix3 = [[matrix1[i][j] + matrix2[i][j] for j in range(col1)] for i in range(row1)]
+        return print_matrix(matrix3)
+
+
+def multiply_byconst():
+    row1, col1 = map(int, input('Enter size of matrix: ').split())
+    print('Enter matrix:')
+    matrix1 = create_matrix(row1, col1)
+    const = input('Enter constant: ')
+    const = int(const) if const.isdigit() else float(const)
+    matrix3 = [[matrix1[i][j] * const for j in range(col1)] for i in range(row1)]
+    return print_matrix(matrix3)
+
+
+def multiply_matrices():
+    row1, col1 = map(int, input('Enter size of first matrix: ').split())
+    print('Enter first matrix:')
+    matrix1 = create_matrix(row1, col1)
+    row2, col2 = map(int, input('Enter size of second matrix: ').split())
+    print('Enter second matrix:')
+    matrix2 = create_matrix(row2, col2)
+    if matrix_rules(3, row1, col1, row2, col2):
+        matrix3 = [[0 for i in range(col2)] for j in range(row1)]
+        for i in range(row1):
+            for j in range(col2):
+                matrix3[i][j] = sum([a * b for a, b in zip(matrix1[i], list(_i[j] for _i in matrix2[:]))])
+        return print_matrix(matrix3)
+
+
+def transpose(matrix1, matrix3):
+    for i in range(len(matrix1)):
+        for j in range(len(matrix1[i])):
+            matrix3[i][j] = matrix1[j][i]
+    return matrix3
+
+
+def transpose_rev(matrix1, matrix3):
+    matrix_ = transpose(matrix1, matrix3)
+    matrix_.reverse()
+    for i in matrix_:
+        i.reverse()
+    return matrix_
+
+def transpose_vertical(matrix1, matrix3):
+    for i in range(len(matrix1)):
+        matrix1[i].reverse()
+        matrix3[i] = matrix1[i]
+    return matrix3
+
+
+def transpose_horiz(matrix1):
+    matrix1.reverse()
+    return matrix1
+
+
+def transpose_matrices():
+    choice_tr = int(input('''1. Main diagonal
+2. Side diagonal
+3. Vertical line
+4. Horizontal line
+Your choice: '''))
+    row1, col1 = map(int, input('Enter size of matrix: ').split())
+    print('Enter matrix:')
+    matrix1 = create_matrix(row1, col1)
+    matrix3 = [[(0) for i in range(len(matrix1[0]))] for j in range(len(matrix1))]
+    (choice_tr == 1 and transpose(matrix1, matrix3)) or (
+            choice_tr == 2 and transpose_rev(matrix1, matrix3)) or (
+            choice_tr == 3 and transpose_vertical(matrix1, matrix3)) or (
+            choice_tr == 4 and transpose_horiz(matrix1))
+    return print_matrix(matrix3) if choice_tr in (1, 2, 3) else print_matrix(matrix1)
+
+
+for i in options:
+    print(i)
+
+choice = int(input('Your choice: '))
+while choice != 0:
+    choice == 1 and add_matrices() or choice == 2 and multiply_byconst() or choice == 3 and multiply_matrices() or choice == 4 and transpose_matrices()
+    print()
+    for i in options:
+        print(i)
+    choice = int(input('Your choice: '))
