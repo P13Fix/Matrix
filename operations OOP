@@ -1,0 +1,142 @@
+class MatrixCreator:  # Having a Matrix Creator helps us. We have all matrices as objects
+
+    def __init__(self, order=""):
+        self.order = order
+        self.dimensions = (input(f"Enter size of{self.order} matrix: > ")).split()
+        self.matrix = []
+        print(f"Enter{order} matrix:")
+        for i in range(0, int(self.dimensions[0])):
+            row = input("> ").split()  # Getting the input for the matrix columns. Splitting it into a list.
+            self.matrix.append(row)
+
+
+class MatrixCalculator:  # Here is where all the calculations take place
+
+    def __init__(self):
+        self.menu()
+
+    def menu(self):
+        print("\n1. Add matrices\n2. Multiply matrix by a constant\n3. Multiply matrices\n4. Transpose matrix\n0. Exit")
+        action = int(input("Your choice: > "))
+        if action == 1:
+            matrix1 = MatrixCreator(" first")
+            matrix2 = MatrixCreator(" second")
+            self.matrix_sum(matrix1, matrix2)
+        elif action == 2:
+            matrix1 = MatrixCreator()
+            self.matrix_multiplication_constant(matrix1)
+        elif action == 3:
+            matrix1 = MatrixCreator(" first")
+            matrix2 = MatrixCreator(" second")
+            self.matrices_multiplication(matrix1, matrix2)
+        elif action == 4:
+            print("\n1. Main diagonal\n2. Side diagonal\n3. Vertical line\n4. Horizontal line")
+            action2 = int(input("Your choice: > "))
+            matrix1 = MatrixCreator()
+            if action2 == 1:
+                self.main_diagonal_transpose(matrix1)
+            elif action2 == 2:
+                self.side_diagonal_transpose(matrix1)
+            elif action2 == 3:
+                self.vertical_line_transpose(matrix1)
+            elif action2 == 4:
+                self.horizontal_line_transpose(matrix1)
+        elif action == 0:
+            exit(1)
+
+    def matrix_sum(self, matrix_a, matrix_b):
+        self.matrix_a = matrix_a.matrix
+        self.matrix_a_dim = matrix_a.dimensions
+        self.matrix_b = matrix_b.matrix
+        self.matrix_b_dim = matrix_b.dimensions
+        # Checking if matrices have the same dimensions.
+
+        if (self.matrix_a_dim[0] == self.matrix_b_dim[0]) and (self.matrix_a_dim[1] == self.matrix_b_dim[1]):
+            combined_matrix = []
+            sum_row = []
+            for i in range(0, int(self.matrix_a_dim[0])):
+                for j in range(0, int(self.matrix_a_dim[1])):
+                    sum_row.append((float(self.matrix_a[i][j]) + float(self.matrix_b[i][j])))
+                combined_matrix.append(sum_row)
+                sum_row = []
+            print("The result is:")
+            for i in combined_matrix:
+                print(*i)
+        else:
+            print("The operation cannot be performed.")
+
+    def matrix_multiplication_constant(self, matrix):
+        self.matrix = matrix.matrix
+        self.matrix_dim = matrix.dimensions
+        constant = float(input("Enter constant: > "))
+        multpl_row = []
+        new_matrix = []
+        for i in range(0, int(self.matrix_dim[0])):
+            for j in range(0, int(self.matrix_dim[1])):
+                multpl_row.append(constant * float(self.matrix[i][j]))
+            new_matrix.append(multpl_row)
+            multpl_row = []
+        print("The result is:")
+        for i in new_matrix:
+            print(*i)
+
+    def matrices_multiplication(self, matrix_a, matrix_b):
+        self.matrix_a = matrix_a.matrix
+        self.matrix_a_dim = matrix_a.dimensions
+        self.matrix_b = matrix_b.matrix
+        self.matrix_b_dim = matrix_b.dimensions
+
+        if self.matrix_a_dim[1] == self.matrix_b_dim[0]:
+            multpl_row = []
+            new_matrix = []
+            for i in range(0, int(self.matrix_a_dim[0])):
+                k = 0
+                C_element = 0
+                for k in range(0, int(self.matrix_b_dim[1])):
+                    for j in range(0, int(self.matrix_a_dim[1])):
+                        C_element += float(self.matrix_a[i][j]) * float(self.matrix_b[j][k])
+                    multpl_row.append(float(C_element))
+                    C_element = 0
+                new_matrix.append(multpl_row)
+                multpl_row = []
+            print("The result is:")
+            for i in new_matrix:
+                print(*i)
+        else:
+            print("The operation cannot be performed.")
+
+    def main_diagonal_transpose(self, matrix):
+        r, c = matrix.dimensions
+        self.matrix = matrix.matrix
+        new_matrix = [[self.matrix[j][i] for j in range(0, int(c))] for i in range(0, int(r))]
+        print("The result is:")
+        for i in new_matrix:
+            print(*i)
+
+    def side_diagonal_transpose(self, matrix):
+        r, c = matrix.dimensions
+        self.matrix = matrix.matrix
+        new_matrix = [[self.matrix[j][i] for j in range(int(c) - 1, -1, -1)] for i in range(int(r) - 1, -1, -1)]
+        print("The result is:")
+        for i in new_matrix:
+            print(*i)
+
+    def vertical_line_transpose(self, matrix):
+        r, c = matrix.dimensions
+        self.matrix = matrix.matrix
+        new_matrix = [[self.matrix[i][j] for j in range(int(c) - 1, -1, -1)] for i in range(0, int(r))]
+        print("The result is:")
+        for i in new_matrix:
+            print(*i)
+
+    def horizontal_line_transpose(self, matrix):
+        r, c = matrix.dimensions
+        self.matrix = matrix.matrix
+        new_matrix = [[self.matrix[i][j] for j in range(0, int(c))] for i in range(int(r) - 1, -1, -1)]
+        print("The result is:")
+        for i in new_matrix:
+            print(*i)
+
+
+while True:
+    MatrixCalculator()
