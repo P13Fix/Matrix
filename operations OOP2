@@ -1,0 +1,111 @@
+class App:
+    _running: bool = True
+
+    def run(self):
+        while self._running:
+            self._print_menu()
+            action = int(input('Your choice: > '))
+            if action == 1:
+                self._add_matrices()
+            elif action == 2:
+                self._multiply_matrix_constant()
+            elif action == 3:
+                self._multiply_matrices()
+            elif action == 4:
+                self._transpose_matrix()
+            else:
+                self._running = False
+
+    @staticmethod
+    def _print_menu():
+        print('1. Add matrices')
+        print('2. Multiply matrix by a constant')
+        print('3. Multiply matrices')
+        print('4. Transpose matrix')
+        print('0. Exit')
+
+    @staticmethod
+    def _print_transpose_menu():
+        print('1. Main diagonal')
+        print('2. Side diagonal')
+        print('3. Vertical line')
+        print('4. Horizontal line')
+
+    @staticmethod
+    def _print_result_matrix(matrix):
+        print('The result is:')
+        for row in matrix:
+            print(*row)
+        print('')
+
+    @staticmethod
+    def _input_one_matrix():
+        rows, cols = map(int, input('Enter matrix size: > ').split())
+        print('Enter matrix:')
+        matrix = [list(map(float, input().split(maxsplit=cols))) for _ in range(rows)]
+
+        return matrix, rows, cols
+
+    @staticmethod
+    def _input_two_matrices():
+        [a_rows, a_cols] = map(int, input('Enter size of first matrix: > ').split())
+        print('Enter first matrix:')
+        matrix_a = [list(map(float, input().split(maxsplit=a_cols))) for _ in range(a_rows)]
+
+        [b_rows, b_cols] = map(int, input('Enter size of second matrix: > ').split())
+        print('Enter second matrix:')
+        matrix_b = [list(map(float, input().split(maxsplit=b_cols))) for _ in range(b_rows)]
+
+        return a_rows, a_cols, matrix_a, b_rows, b_cols, matrix_b
+
+    def _add_matrices(self):
+        a_rows, a_cols, matrix_a, b_rows, b_cols, matrix_b = self._input_two_matrices()
+        if a_rows != b_rows or a_cols != b_cols:
+            print('The operation cannot be performed.')
+            return
+
+        result = [[matrix_a[i][j] + matrix_b[i][j] for j in range(len(matrix_a[i]))] for i in range(len(matrix_a))]
+
+        self._print_result_matrix(result)
+
+    def _multiply_matrix_constant(self):
+        matrix, rows, cols = self._input_one_matrix()
+
+        const = float(input('Enter constant: > '))
+        result = [[matrix[i][j] * const for j in range(cols)] for i in range(rows)]
+
+        self._print_result_matrix(result)
+
+    def _multiply_matrices(self):
+        a_rows, a_cols, matrix_a, b_rows, b_cols, matrix_b = self._input_two_matrices()
+        if a_cols != b_rows:
+            print('The operation cannot be performed.')
+            return
+
+        result = [
+            [sum([matrix_a[i][ii] * matrix_b[ii][j] for ii in range(a_cols)]) for j in range(b_cols)]
+            for i in range(a_rows)
+        ]
+
+        self._print_result_matrix(result)
+
+    def _transpose_matrix(self):
+        self._print_transpose_menu()
+        transpose_type = int(input('Your choice: > '))
+
+        matrix, rows, cols = self._input_one_matrix()
+
+        if transpose_type == 1:
+            result = [[matrix[j][i] for j in range(cols)] for i in range(rows)]
+        elif transpose_type == 2:
+            result = [[matrix[cols - j - 1][rows - i - 1] for j in range(cols)] for i in range(rows)]
+        elif transpose_type == 3:
+            result = [[matrix[i][cols - j - 1] for j in range(cols)] for i in range(rows)]
+        else:
+            result = [[matrix[rows - i - 1][j] for j in range(cols)] for i in range(rows)]
+
+        self._print_result_matrix(result)
+
+
+app = App()
+app.run()
